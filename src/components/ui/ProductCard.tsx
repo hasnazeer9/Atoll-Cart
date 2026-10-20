@@ -2,8 +2,10 @@ import Image from "next/image";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { StarIcon } from "@hugeicons/core-free-icons";
 import { formatMVR } from "@/lib/utils";
+import FavoriteButton from "./FavoriteButton";
 
 export type ProductCardProps = {
+  id?: string; // when set, the card shows a favourites heart
   image?: string;
   name?: string;
   price?: number;
@@ -15,6 +17,7 @@ export type ProductCardProps = {
 };
 
 export default function ProductCard({
+  id,
   image,
   name,
   price,
@@ -51,10 +54,16 @@ export default function ProductCard({
             -{discountPercentage}%
           </span>
         )}
-        {badge && (
-          <span className="absolute right-2 top-2 rounded-md bg-white/90 px-2 py-0.5 text-xs font-medium text-ink-muted">
-            {badge}
-          </span>
+        {id ? (
+          <div className="absolute right-2 top-2">
+            <FavoriteButton id={id} name={name} />
+          </div>
+        ) : (
+          badge && (
+            <span className="absolute right-2 top-2 rounded-md bg-white/90 px-2 py-0.5 text-xs font-medium text-ink-muted">
+              {badge}
+            </span>
+          )
         )}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-3">

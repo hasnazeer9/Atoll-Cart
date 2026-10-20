@@ -33,7 +33,7 @@ export default function PhoneMockups() {
       <Phone className="left-[2%] top-0 w-[48%] animate-float-a motion-reduce:animate-none">
         <div className="px-[5cqw] pt-[12cqw]">
           <div className="relative aspect-[4/3] overflow-hidden rounded-[4cqw] bg-surface">
-            <Image src="/products/p2.svg" alt="" fill unoptimized sizes="200px" className="object-cover" />
+            <Image src="/products/p2.jpg" alt="" fill unoptimized sizes="200px" className="object-cover" />
           </div>
           <p className="mt-[4cqw] text-[5.5cqw] font-semibold leading-tight">Sample product</p>
           <p className="mt-[1cqw] text-[8cqw] font-extrabold text-brand-dark">MVR 399</p>
@@ -59,10 +59,10 @@ export default function PhoneMockups() {
             <div className="grid animate-scroll-y grid-cols-2 gap-[3cqw] pb-[3cqw] motion-reduce:animate-none">
               {[0, 1].map((n) => (
                 <div key={n} className="contents">
-                  <Thumb src="/products/p1.svg" off="-29%" price="MVR 249" />
-                  <Thumb src="/products/p3.svg" off="-19%" price="MVR 129" />
-                  <Thumb src="/products/p4.svg" price="MVR 189" />
-                  <Thumb src="/products/p5.svg" off="-18%" price="MVR 899" />
+                  <Thumb src="/products/p1.jpg" off="-29%" price="MVR 249" />
+                  <Thumb src="/products/p3.jpg" off="-19%" price="MVR 129" />
+                  <Thumb src="/products/p4.jpg" price="MVR 189" />
+                  <Thumb src="/products/p5.jpg" off="-18%" price="MVR 899" />
                 </div>
               ))}
             </div>

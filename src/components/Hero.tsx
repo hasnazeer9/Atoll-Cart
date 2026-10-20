@@ -8,15 +8,12 @@ export default function Hero() {
         <HeroPhone src="/phone-red.webp" alt="Red foldable phone, back view" className="hidden w-full max-w-[280px] justify-self-end lg:block" />
 
         <div className="text-center">
-          <span className="inline-block rounded-full bg-brand-soft px-3 py-1 text-sm font-semibold text-brand-dark">
-            Coming soon
-          </span>
-          <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            A Better Way to Shop Is <span className="text-brand-dark">Coming.</span>
+          <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+            Everything You Love, <span className="text-brand-dark">Made for Island Life.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-lg text-lg text-ink-muted">
-            We&apos;re building a simple, friendly online shop made for the Maldives — quality products, clear MVR
-            pricing, and an easy shopping experience.
+            Atoll Cart brings you hand-picked products, clear MVR prices and an easy, friendly way to shop —
+            made for the Maldives.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link href="#preview" className="inline-flex min-h-12 items-center justify-center rounded-full bg-brand-dark px-7 font-semibold text-white shadow-card transition hover:bg-brand hover:shadow-lift">

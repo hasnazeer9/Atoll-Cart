@@ -35,6 +35,7 @@ export const siteConfig = {
   googleMapsEmbedUrl: "", // the "src" of a Google Maps embed iframe
   nav: [
     { label: "Home", href: "/" },
+    { label: "All Products", href: "/products" },
     { label: "About Us", href: "/#about" },
     { label: "Contact", href: "/#connect" },
     { label: "Login", href: "/login" },

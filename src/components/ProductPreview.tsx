@@ -1,5 +1,10 @@
+import Link from "next/link";
 import ProductCard from "./ui/ProductCard";
 import { previewProducts } from "@/lib/preview-products";
+
+// The home page shows a hand-picked 12; the full list lives on /products.
+const featuredIds = ["p13", "p14", "p15", "p7", "p18", "p16", "p1", "p5", "p8", "p4", "p10", "p17"];
+const featured = featuredIds.map((id) => previewProducts.find((p) => p.id === id)!);
 
 export default function ProductPreview() {
   return (
@@ -11,9 +16,14 @@ export default function ProductPreview() {
           illustrative and not available for purchase.
         </p>
         <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 xl:grid-cols-6">
-          {previewProducts.map((p, i) => (
-            <ProductCard key={i} {...p} />
+          {featured.map((p) => (
+            <ProductCard key={p.id} {...p} />
           ))}
+        </div>
+        <div className="mt-8 text-center">
+          <Link href="/products" className="inline-flex min-h-12 items-center rounded-full border border-brand-dark px-7 font-semibold text-brand-dark transition hover:bg-brand-soft">
+            View All Products
+          </Link>
         </div>
       </div>
     </section>
