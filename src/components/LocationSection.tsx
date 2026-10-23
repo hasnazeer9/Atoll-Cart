@@ -1,7 +1,7 @@
-import { siteConfig } from "@/config/site";
+import { getSettings } from "@/lib/settings";
 
 export default function LocationSection() {
-  const { googleMapsEmbedUrl, address } = siteConfig;
+  const { mapEmbedUrl: googleMapsEmbedUrl, address } = getSettings();
   return (
     <section className="bg-surface py-16">
       <div className="mx-auto max-w-6xl px-4 text-center">

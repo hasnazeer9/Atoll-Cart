@@ -5,3 +5,7 @@ export function formatMVR(amount: number): string {
 export function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
 }
+
+export function formatAmount(amount: number): string {
+  return amount.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}

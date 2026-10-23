@@ -1,18 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, FilterHorizontalIcon } from "@hugeicons/core-free-icons";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import ProductCard from "./ui/ProductCard";
 import { useFavorites } from "@/lib/favorites";
-import { previewCategories, previewProducts } from "@/lib/preview-products";
-
-type Sort = "featured" | "price-asc" | "price-desc" | "discount";
+import { previewCategories, type PreviewProduct } from "@/lib/preview-products";
 
 const inputClass =
   "min-h-11 w-full rounded-xl border border-gray-300 bg-white px-3 text-sm transition focus:border-brand-dark focus:outline-none focus:ring-2 focus:ring-brand/40";
 
-export default function ProductBrowser() {
+export default function ProductBrowser({ products }: { products: PreviewProduct[] }) {
   const [query, setQuery] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [minPrice, setMinPrice] = useState("");
@@ -20,14 +17,22 @@ export default function ProductBrowser() {
   const [onSale, setOnSale] = useState(false);
   const [onlyFavorites, setOnlyFavorites] = useState(false);
   const favorites = useFavorites();
-  const [sort, setSort] = useState<Sort>("featured");
-  const [showFilters, setShowFilters] = useState(false);
+
+  // Header search, category links and the favourites link arrive as URL params.
+  const params = useSearchParams();
+  useEffect(() => {
+    setQuery(params.get("q") ?? "");
+    const cat = params.get("category");
+    setCategories(cat ? [cat] : []);
+    setOnSale(params.get("sale") === "1");
+    setOnlyFavorites(params.get("favorites") === "1");
+  }, [params]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     const min = minPrice === "" ? 0 : Number(minPrice);
     const max = maxPrice === "" ? Infinity : Number(maxPrice);
-    const list = previewProducts.filter((p) => {
+    const list = products.filter((p) => {
       const price = p.price ?? 0;
       if (q && !`${p.name} ${p.category}`.toLowerCase().includes(q)) return false;
       if (categories.length && !categories.includes(p.category)) return false;
@@ -36,11 +41,8 @@ export default function ProductBrowser() {
       if (onlyFavorites && !favorites.includes(p.id)) return false;
       return true;
     });
-    if (sort === "price-asc") list.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
-    if (sort === "price-desc") list.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
-    if (sort === "discount") list.sort((a, b) => (b.discountPercentage ?? 0) - (a.discountPercentage ?? 0));
     return list;
-  }, [query, categories, minPrice, maxPrice, onSale, onlyFavorites, favorites, sort]);
+  }, [products, query, categories, minPrice, maxPrice, onSale, onlyFavorites, favorites]);
 
   const hasFilters = query || categories.length || minPrice || maxPrice || onSale || onlyFavorites;
 
@@ -58,35 +60,9 @@ export default function ProductBrowser() {
   }
 
   return (
-    <div className="mt-8">
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <label className="relative flex-1">
-          <span className="sr-only">Search products</span>
-          <HugeiconsIcon icon={Search01Icon} size={18} strokeWidth={1.5} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" />
-          <input
-            type="search" value={query} onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search products…" className={`${inputClass} pl-10`}
-          />
-        </label>
-        <label className="sm:w-56">
-          <span className="sr-only">Sort by</span>
-          <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className={inputClass}>
-            <option value="featured">Sort: Featured</option>
-            <option value="price-asc">Price: low to high</option>
-            <option value="price-desc">Price: high to low</option>
-            <option value="discount">Biggest discount</option>
-          </select>
-        </label>
-        <button
-          type="button" onClick={() => setShowFilters((v) => !v)} aria-expanded={showFilters}
-          className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-line px-4 text-sm font-medium lg:hidden"
-        >
-          <HugeiconsIcon icon={FilterHorizontalIcon} size={18} strokeWidth={1.5} /> Filters
-        </button>
-      </div>
-
-      <div className="mt-6 grid gap-8 lg:grid-cols-[240px_1fr]">
-        <aside className={`${showFilters ? "block" : "hidden"} space-y-6 rounded-2xl border border-line bg-surface p-4 lg:block lg:self-start`}>
+    <div>
+      <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
+        <aside className="hidden space-y-6 rounded-2xl border border-line bg-surface p-4 lg:block lg:self-start">
           <fieldset>
             <legend className="mb-2 text-sm font-semibold">Category</legend>
             <div className="space-y-2">
@@ -126,7 +102,7 @@ export default function ProductBrowser() {
             {results.length} {results.length === 1 ? "product" : "products"}
           </p>
           {results.length > 0 ? (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
               {results.map((p) => (
                 <ProductCard key={p.id} {...p} />
               ))}
