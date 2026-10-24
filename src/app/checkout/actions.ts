@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createOrder, findOrCreateCustomer, getOrder, getProduct } from "@/lib/data";
 import { getSettings } from "@/lib/settings";
+import { getAccount } from "@/lib/customer-auth";
 
 export type CheckoutState = { error?: string; values?: Record<string, string> };
 
@@ -66,7 +67,11 @@ export async function placeOrderAction(_prev: CheckoutState, formData: FormData)
 
   let orderId = 0;
   try {
-    const customerId = findOrCreateCustomer({ name: values.name, email: values.email, phone: values.phone, address: values.address });
+    // Logged-in customers keep the order in their account; guests are matched by phone/email.
+    const account = await getAccount();
+    const customerId = account
+      ? account.id
+      : findOrCreateCustomer({ name: values.name, email: values.email, phone: values.phone, address: values.address });
     orderId = createOrder({
       customer_id: customerId,
       customer_name: values.name,

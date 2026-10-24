@@ -168,13 +168,17 @@ export function getOrderByCode(code: string): { order: OrderRow; items: OrderIte
 export function findOrCreateCustomer(c: { name: string; email: string; phone: string; address: string }): number {
   const db = getDb();
   const found = db
-    .prepare("SELECT id FROM customers WHERE (phone != '' AND phone = ?) OR (email != '' AND email = ?) LIMIT 1")
+    .prepare("SELECT id FROM customers WHERE password_hash IS NULL AND ((phone != '' AND phone = ?) OR (email != '' AND email = ?)) LIMIT 1")
     .get(c.phone, c.email) as { id: number } | undefined;
   if (found) {
     db.prepare("UPDATE customers SET address = ? WHERE id = ? AND ? != ''").run(c.address, found.id, c.address);
     return found.id;
   }
   return createCustomer(c);
+}
+
+export function listOrdersForCustomer(customerId: number): OrderRow[] {
+  return getDb().prepare("SELECT * FROM orders WHERE customer_id = ? ORDER BY created_at DESC").all(customerId) as OrderRow[];
 }
 
 export function getOrder(id: number): { order: OrderRow; items: OrderItemRow[] } | undefined {

@@ -80,6 +80,15 @@ function init(): DatabaseSync {
     const cols = db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
     if (!cols.some((c) => c.name === column)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${ddl}`);
   };
+  addColumn("customers", "password_hash", "TEXT");
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS customer_sessions (
+      token_hash TEXT PRIMARY KEY,
+      customer_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+      expires_at INTEGER NOT NULL
+    );
+    CREATE UNIQUE INDEX IF NOT EXISTS customers_account_email ON customers(email) WHERE password_hash IS NOT NULL;
+  `);
   addColumn("orders", "public_code", "TEXT");
   addColumn("orders", "email", "TEXT NOT NULL DEFAULT ''");
   addColumn("orders", "address", "TEXT NOT NULL DEFAULT ''");

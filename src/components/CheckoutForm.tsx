@@ -21,9 +21,12 @@ function SubmitButton() {
   );
 }
 
-type Props = { products: PreviewProduct[]; deliveryFee: number; gstRate: number; bankEnabled: boolean };
+type Props = {
+  products: PreviewProduct[]; deliveryFee: number; gstRate: number; bankEnabled: boolean;
+  account: { name: string; email: string; phone: string; address: string } | null;
+};
 
-export default function CheckoutForm({ products, deliveryFee, gstRate, bankEnabled }: Props) {
+export default function CheckoutForm({ products, deliveryFee, gstRate, bankEnabled, account }: Props) {
   const lines = useCart();
   const [state, formAction] = useActionState<CheckoutState, FormData>(placeOrderAction, {});
   const items = lines.flatMap((l) => {
@@ -33,7 +36,8 @@ export default function CheckoutForm({ products, deliveryFee, gstRate, bankEnabl
   const subtotal = items.reduce((sum, i) => sum + (i.product.price ?? 0) * i.qty, 0);
   const total = subtotal + deliveryFee;
   const gst = Math.round(((total * gstRate) / (100 + gstRate)) * 100) / 100;
-  const v = state.values ?? {};
+  // What the customer typed wins; otherwise fall back to their saved account details.
+  const v: Record<string, string | undefined> = state.values ?? { name: account?.name, phone: account?.phone, email: account?.email, address: account?.address };
 
   if (items.length === 0) {
     return (
@@ -57,6 +61,9 @@ export default function CheckoutForm({ products, deliveryFee, gstRate, bankEnabl
 
         <section className="space-y-4 rounded-2xl border border-line p-5">
           <h2 className="font-semibold">Your details</h2>
+          {!account && (
+            <p className="text-sm text-ink-muted">Have an account? <Link href="/login" className="font-medium text-brand-dark underline">Log in</Link> to fill this in for you and keep track of your orders.</p>
+          )}
           <label className="block text-sm font-medium">Full name
             <input name="name" required autoComplete="name" defaultValue={v.name} className={`${input} mt-1`} />
           </label>

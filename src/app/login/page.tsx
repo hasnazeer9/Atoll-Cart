@@ -1,20 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { redirect } from "next/navigation";
+import AuthShell, { FormMessage, fieldClass, primaryBtn } from "@/components/AuthShell";
+import { getAccount } from "@/lib/customer-auth";
+import { loginAction } from "../account/actions";
 
-export const metadata: Metadata = { title: "Login — Coming Soon" };
+export const metadata: Metadata = { title: "Login", robots: { index: false } };
 
-export default function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  if (await getAccount()) redirect("/account");
+  const { error } = await searchParams;
   return (
-    <>
-      <Header />
-      <main className="mx-auto max-w-md px-4 py-24 text-center">
-        <h1 className="text-3xl font-bold">Customer accounts are coming soon</h1>
-        <p className="mt-3 text-ink-muted">Login isn&apos;t available yet. Please check back after we launch.</p>
-        <Link href="/" className="mt-6 inline-block rounded-full bg-brand-dark px-6 py-3 font-semibold text-white">Back to home</Link>
-      </main>
-      <Footer />
-    </>
+    <AuthShell title="Login" subtitle="Welcome back. Log in to see your orders.">
+      <form action={loginAction} className="space-y-4">
+        <FormMessage error={error} />
+        <label className="block text-sm font-medium">Email
+          <input name="email" type="email" required autoComplete="username" className={fieldClass} />
+        </label>
+        <label className="block text-sm font-medium">Password
+          <input name="password" type="password" required autoComplete="current-password" className={fieldClass} />
+        </label>
+        <button type="submit" className={primaryBtn}>Log in</button>
+      </form>
+      <p className="text-center text-sm text-ink-muted">
+        New here? <Link href="/register" className="font-medium text-brand-dark underline">Create an account</Link>
+      </p>
+    </AuthShell>
   );
 }

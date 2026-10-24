@@ -39,7 +39,7 @@ function SearchBar({ className = "" }: { className?: string }) {
   );
 }
 
-export default function HeaderClient({ shopName }: { shopName: string }) {
+export default function HeaderClient({ shopName, accountName }: { shopName: string; accountName: string | null }) {
   const [open, setOpen] = useState(false);
   const favoriteCount = useFavorites().length;
   const cartCount = useCart().reduce((n, l) => n + l.qty, 0);
@@ -95,8 +95,8 @@ export default function HeaderClient({ shopName }: { shopName: string }) {
           <Logo name={shopName} />
           <SearchBar className="hidden max-w-2xl flex-1 md:flex" />
           <div className="ml-auto flex items-center md:ml-0">
-            <Link href="/login" className="mr-1 hidden items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-brand-soft hover:text-brand-dark md:flex">
-              <HugeiconsIcon icon={UserIcon} size={20} strokeWidth={1.25} /> Login
+            <Link href={accountName ? "/account" : "/login"} className="mr-1 hidden max-w-[10rem] items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-brand-soft hover:text-brand-dark md:flex">
+              <HugeiconsIcon icon={UserIcon} size={20} strokeWidth={1.25} /> <span className="truncate">{accountName ?? "Login"}</span>
             </Link>
             {favoritesLink}
             {cartLink}
@@ -142,7 +142,7 @@ export default function HeaderClient({ shopName }: { shopName: string }) {
             <HugeiconsIcon icon={Cancel01Icon} size={24} strokeWidth={1.5} />
           </button>
           <ul className="mt-2 space-y-1">
-            {[...siteConfig.nav, { label: "Login", href: "/login" }].map((item) => (
+            {[...siteConfig.nav, accountName ? { label: "My account", href: "/account" } : { label: "Login", href: "/login" }].map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
