@@ -1,0 +1,17 @@
+# Run the shop with Docker (Synology Container Manager, or any Docker host).
+#   1. Put a long random secret in ADMIN_SETUP_TOKEN below.
+#   2. docker compose up -d --build
+#   3. Open http://<host>:3000/admin (use HTTPS in front of it, see README).
+services:
+  atollcart:
+    build: .
+    container_name: atollcart
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+      ADMIN_SETUP_TOKEN: "change-me-to-a-long-random-secret"
+    volumes:
+      - ./shop-data:/data   # database + uploaded photos; back this folder up
